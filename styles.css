@@ -1,0 +1,293 @@
+/* ===== Forex Rulet ===== */
+:root{
+  --bg:#0b0f14;
+  --bg-2:#111823;
+  --card:#141d29;
+  --card-2:#1b2635;
+  --line:#243244;
+  --ink:#e6edf5;
+  --ink-dim:#8ca0b8;
+  --ink-faint:#5d7089;
+  --gold:#e8c15a;
+  --green:#3ddc97;
+  --red:#ff6b6b;
+  --blue:#5aa9e8;
+  --violet:#b98ce8;
+  --shadow:0 10px 30px rgba(0,0,0,.45);
+  --r:16px;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(1100px 700px at 50% -12%, #17273a 0%, transparent 60%),
+    var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.45;
+  -webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
+
+#app{max-width:520px;margin:0 auto;padding:18px 16px calc(28px + env(safe-area-inset-bottom))}
+
+.screen{display:none;animation:fade .25s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ---------- baslik ---------- */
+.brand{text-align:center;margin:10px 0 22px}
+.brand-mark{
+  width:62px;height:62px;margin:0 auto 12px;border-radius:50%;
+  display:grid;place-items:center;
+  font-family:var(--mono);font-size:30px;color:var(--gold);
+  border:2px solid var(--gold);
+  background:radial-gradient(circle at 32% 26%, #223143 0%, transparent 62%), #101722;
+  box-shadow:0 0 0 6px rgba(232,193,90,.07), var(--shadow);
+}
+.brand h1{
+  margin:0;font-size:28px;letter-spacing:.16em;font-weight:800;
+  background:linear-gradient(180deg,#fff 0%, var(--gold) 130%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.tagline{margin:8px 0 0;color:var(--ink-dim);font-size:13.5px}
+
+/* ---------- kart ---------- */
+.card{
+  background:linear-gradient(180deg,var(--card) 0%, var(--bg-2) 100%);
+  border:1px solid var(--line);border-radius:var(--r);
+  padding:16px;margin:0 0 14px;box-shadow:var(--shadow);
+}
+.card h2{margin:0 0 8px;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim)}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-head h2{margin:0}
+.hint{font-size:13px;color:var(--ink-dim);margin:0 0 10px}
+.hint.muted{color:var(--ink-faint)}
+
+/* ---------- form ---------- */
+.row{display:flex;gap:8px}
+input[type=text]{
+  flex:1;min-width:0;background:#0d141d;border:1px solid var(--line);
+  color:var(--ink);border-radius:12px;padding:13px 14px;font-size:16px;font-family:inherit;
+}
+input[type=text]:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,193,90,.14)}
+input[type=text]::placeholder{color:var(--ink-faint)}
+
+/* ---------- butonlar ---------- */
+.btn{
+  font-family:inherit;font-size:15px;font-weight:700;border-radius:12px;
+  padding:13px 16px;border:1px solid var(--line);background:var(--card-2);color:var(--ink);
+  cursor:pointer;transition:transform .08s ease, filter .15s ease, opacity .15s ease;
+}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{background:linear-gradient(180deg,#f0cf74,#d3a63c);color:#20180a;border-color:#f0cf74}
+.btn-xl{width:100%;padding:17px;font-size:17px;letter-spacing:.1em}
+.btn-add{background:var(--card-2);border-color:var(--line);padding:13px 18px}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--ink-dim);font-weight:600}
+.btn-sm{padding:7px 12px;font-size:12.5px;border-radius:9px}
+.btn-yes{background:linear-gradient(180deg,#4ff0ae,#22b478);color:#062015;border-color:#4ff0ae}
+.btn-no{background:linear-gradient(180deg,#3a4a5f,#26313f);color:var(--ink);border-color:#41556c}
+.stack{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+
+/* ---------- oyuncu cipleri ---------- */
+.chips{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.chips li{
+  display:flex;align-items:center;gap:8px;background:var(--card-2);
+  border:1px solid var(--line);border-radius:999px;padding:7px 8px 7px 14px;font-size:14px;font-weight:600;
+}
+.chips .x{
+  border:none;background:#2b394b;color:var(--ink-dim);width:22px;height:22px;
+  border-radius:50%;cursor:pointer;font-size:14px;line-height:1;display:grid;place-items:center;padding:0;
+}
+.chips .x:hover{background:var(--red);color:#fff}
+
+/* ---------- mod secici ---------- */
+.modes{display:grid;gap:8px}
+.mode{
+  text-align:left;background:#0d141d;border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;color:var(--ink);cursor:pointer;font-family:inherit;
+  display:grid;gap:3px;transition:border-color .15s, background .15s;
+}
+.mode strong{font-size:14.5px}
+.mode span{font-size:12.5px;color:var(--ink-dim);line-height:1.35}
+.mode.active{border-color:var(--gold);background:#17202c}
+.mode.active strong{color:var(--gold)}
+
+/* ---------- skor tablosu ---------- */
+.scoreboard{list-style:none;margin:0;padding:0;counter-reset:s}
+.scoreboard li{
+  display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;
+  padding:10px 0;border-bottom:1px solid var(--line);
+}
+.scoreboard li:last-child{border-bottom:none}
+.scoreboard li::before{
+  counter-increment:s;content:counter(s);
+  font-family:var(--mono);font-size:13px;color:var(--ink-faint);text-align:right;
+}
+.scoreboard li:nth-child(1)::before{color:var(--gold)}
+.scoreboard li:nth-child(2)::before{color:#c9d6e4}
+.scoreboard li:nth-child(3)::before{color:#c98f5a}
+.sb-main{min-width:0}
+.sb-name{font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-sub{font-size:12px;color:var(--ink-dim);font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-eur{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green);text-align:right;white-space:nowrap}
+.scoreboard.big li{padding:14px 0}
+.scoreboard.big .sb-name{font-size:17px}
+
+/* ---------- nasil oynanir ---------- */
+.how summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.how summary::-webkit-details-marker{display:none}
+.how summary::after{content:'+';color:var(--gold);font-size:20px;font-family:var(--mono)}
+.how[open] summary::after{content:'–'}
+.how ol{margin:12px 0 0;padding-left:20px;font-size:13.5px;color:var(--ink-dim);line-height:1.6}
+.how li{margin-bottom:6px}
+.how b{color:var(--ink)}
+
+.foot{text-align:center;padding:6px 0 0}
+
+/* ---------- sira devri ---------- */
+#screen-pass.active{display:grid;min-height:78vh;place-items:center}
+.pass-box{text-align:center;width:100%}
+.pass-label{margin:0;color:var(--ink-faint);letter-spacing:.3em;font-size:12px;text-transform:uppercase}
+.pass-box h2{margin:6px 0 4px;font-size:34px;color:var(--gold);word-break:break-word}
+.pass-box .btn{margin-top:26px}
+
+/* ---------- HUD ---------- */
+.hud{
+  background:linear-gradient(180deg,var(--card) 0%, var(--bg-2) 100%);
+  border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.hud-top{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-dim)}
+.hud-player{font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60%}
+.hud-round{font-family:var(--mono);letter-spacing:.06em}
+.wallet{text-align:center;padding:12px 0 10px}
+.wallet-amount{font-family:var(--mono);font-size:clamp(30px,9vw,42px);font-weight:700;color:var(--gold);line-height:1.1;word-break:break-all}
+.wallet-cur{font-size:13px;color:var(--ink-dim);margin-top:4px}
+.wallet.flash-up .wallet-amount{animation:pumpUp .6s ease}
+.wallet.flash-down .wallet-amount{animation:pumpDown .6s ease}
+@keyframes pumpUp{0%{transform:scale(1)}30%{transform:scale(1.14);color:var(--green)}100%{transform:scale(1)}}
+@keyframes pumpDown{0%{transform:scale(1)}30%{transform:scale(.9);color:var(--red)}100%{transform:scale(1)}}
+.hud-bottom{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pill{
+  font-family:var(--mono);font-size:11.5px;padding:5px 10px;border-radius:999px;
+  background:#0d141d;border:1px solid var(--line);color:var(--ink-dim);white-space:nowrap;
+}
+.pill-warn{color:var(--gold);border-color:#3b3320}
+
+/* ---------- rulet ---------- */
+.wheel-wrap{position:relative;width:min(80vw,300px);margin:0 auto 16px;aspect-ratio:1;
+  transition:width .45s cubic-bezier(.4,0,.2,1)}
+.wheel-wrap.compact{width:min(42vw,158px)}
+.wheel-wrap.compact .wheel-hub{font-size:10px}
+.wheel-wrap.compact .wheel-pointer{border-left-width:8px;border-right-width:8px;border-top-width:15px;top:-6px}
+#wheel{width:100%;height:100%;display:block;border-radius:50%;
+  box-shadow:0 0 0 3px #1d2735, 0 0 0 6px #0d141d, 0 14px 34px rgba(0,0,0,.55)}
+.wheel-pointer{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;
+  border-top:20px solid var(--gold);z-index:3;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));
+}
+.wheel-hub{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:29%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 35% 30%, #22303f, #0e151e);
+  border:2px solid var(--gold);color:var(--gold);
+  font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-align:center;
+  cursor:pointer;z-index:2;user-select:none;padding:4px;
+  transition:transform .1s ease, opacity .2s;
+}
+.wheel-hub:active{transform:translate(-50%,-50%) scale(.94)}
+.wheel-hub.spinning{opacity:.55;cursor:default;animation:hubPulse 1s ease-in-out infinite}
+.wheel-hub.locked{cursor:default;font-size:11px}
+@keyframes hubPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,193,90,.35)}50%{box-shadow:0 0 0 10px rgba(232,193,90,0)}}
+
+/* ---------- sahne / teklif ---------- */
+.stage{min-height:108px;margin-bottom:12px}
+.offer{
+  background:linear-gradient(180deg,var(--card) 0%, var(--bg-2) 100%);
+  border:1px solid var(--line);border-radius:var(--r);padding:16px;text-align:center;
+  box-shadow:var(--shadow);animation:pop .3s cubic-bezier(.2,1.3,.4,1);
+}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.offer-kicker{font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px}
+.offer-flag{font-size:38px;line-height:1}
+.offer-cur{font-weight:800;font-size:17px;margin-top:2px}
+.offer-cur small{display:block;font-weight:500;font-size:12.5px;color:var(--ink-dim);margin-top:1px}
+.offer-amount{font-family:var(--mono);font-size:clamp(26px,7.5vw,34px);font-weight:700;color:var(--ink);margin:12px 0 2px;word-break:break-all}
+.offer-vs{font-size:12.5px;color:var(--ink-dim)}
+.risk{display:inline-block;margin-top:11px;font-size:11.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;padding:5px 12px;border-radius:999px;border:1px solid}
+.tier-1{color:var(--green);border-color:rgba(61,220,151,.4);background:rgba(61,220,151,.08)}
+.tier-2{color:var(--blue);border-color:rgba(90,169,232,.4);background:rgba(90,169,232,.08)}
+.tier-3{color:var(--gold);border-color:rgba(232,193,90,.4);background:rgba(232,193,90,.08)}
+.tier-4{color:var(--red);border-color:rgba(255,107,107,.45);background:rgba(255,107,107,.09)}
+.tier-0{color:var(--ink-dim);border-color:var(--line)}
+.peek{margin-top:12px;padding:10px 12px;border-radius:11px;background:#0d141d;border:1px dashed #35465c;
+  font-family:var(--mono);font-size:12.5px;color:var(--blue);text-align:left;line-height:1.6}
+
+/* sonuc karti */
+.verdict{
+  background:linear-gradient(180deg,var(--card) 0%, var(--bg-2) 100%);
+  border:1px solid var(--line);border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--shadow);
+  animation:pop .3s cubic-bezier(.2,1.3,.4,1);
+}
+.verdict-tag{font-size:22px;font-weight:800;letter-spacing:.04em;margin:0 0 4px}
+.verdict-text{font-size:13.5px;color:var(--ink-dim);margin:0}
+.v-steal{color:#7dffc4}.v-good{color:var(--green)}.v-fair{color:var(--ink-dim)}
+.v-bad{color:#ffab6b}.v-scam{color:var(--red)}
+
+/* ---------- aksiyonlar ---------- */
+.actions{display:grid;gap:9px;margin-bottom:16px}
+.actions .duo{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+
+/* ---------- log ---------- */
+.log-wrap h3{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 8px}
+.log{list-style:none;margin:0;padding:0;font-family:var(--mono);font-size:12px;max-height:190px;overflow-y:auto}
+.log.log-full{max-height:none}
+.log li{padding:7px 0;border-bottom:1px solid #1a2432;color:var(--ink-dim);display:flex;gap:8px;line-height:1.45}
+.log li:last-child{border-bottom:none}
+.log .t{color:var(--ink-faint);flex:0 0 auto}
+.log .up{color:var(--green)}
+.log .down{color:var(--red)}
+.log .neutral{color:var(--ink-dim)}
+.log .peak{color:var(--gold)}
+.log-empty{color:var(--ink-faint)}
+
+/* ---------- sonuc ekrani ---------- */
+.result{text-align:center}
+.over-reason{margin:0 0 4px;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.result h2{margin:0 0 14px;font-size:24px;color:var(--ink);text-transform:none;letter-spacing:0}
+.result-label{margin:0;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint)}
+.result-amount{font-family:var(--mono);font-size:clamp(28px,8vw,38px);font-weight:700;color:var(--gold);
+  line-height:1.15;margin-top:4px;word-break:break-all}
+.result-cur{font-size:13.5px;color:var(--ink-dim);margin-top:3px}
+.result-eur{font-family:var(--mono);font-size:19px;color:var(--green);margin-top:10px;font-weight:700}
+.badges{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:14px}
+.badge{font-size:11.5px;padding:5px 11px;border-radius:999px;background:#0d141d;border:1px solid var(--line);color:var(--ink-dim)}
+.badge.hot{color:var(--gold);border-color:rgba(232,193,90,.4)}
+
+@media (min-width:560px){
+  #app{padding-top:28px}
+  .actions .duo{gap:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+
+/* ---------- kulis dedikodusu ---------- */
+.rumor{
+  margin-top:12px;padding:9px 12px;border-radius:11px;
+  background:rgba(185,140,232,.07);border:1px solid rgba(185,140,232,.28);
+  font-size:12.5px;color:#d5bff0;text-align:left;line-height:1.45;
+  display:flex;gap:9px;align-items:flex-start;
+}
+.rumor-tag{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--violet);
+  border:1px solid rgba(185,140,232,.45);border-radius:5px;padding:2px 5px;flex:0 0 auto;margin-top:1px;
+}

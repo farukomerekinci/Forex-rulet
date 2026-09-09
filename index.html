@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0f14">
+<meta name="description" content="Forex Rulet — bilmediğin para birimleriyle takas ruleti. Tek telefondan sırayla oynanır.">
+<title>Forex Rulet</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%230b0f14' stroke='%23e8c15a' stroke-width='2'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%23e8c15a' font-family='monospace'%3E%E2%82%AC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============== ANA EKRAN ============== -->
+  <section id="screen-home" class="screen active">
+    <header class="brand">
+      <div class="brand-mark">€</div>
+      <h1>FOREX RULET</h1>
+      <p class="tagline">100 euro. Bilmediğin para birimleri. Her turda bir teklif.</p>
+    </header>
+
+    <div class="card">
+      <h2>Oyuncular</h2>
+      <p class="hint">Tek telefondan sırayla oynanır. Herkes bir takma ad girsin.</p>
+      <form id="player-form" autocomplete="off">
+        <div class="row">
+          <input id="player-input" type="text" maxlength="14" placeholder="Takma ad" aria-label="Takma ad">
+          <button type="submit" class="btn btn-add" aria-label="Oyuncu ekle">Ekle</button>
+        </div>
+      </form>
+      <ul id="player-list" class="chips"></ul>
+      <p id="player-empty" class="hint muted">Henüz oyuncu yok.</p>
+    </div>
+
+    <div class="card">
+      <h2>Masa kuralları</h2>
+      <div class="modes" id="mode-picker" role="radiogroup" aria-label="Masa ücreti modu">
+        <button type="button" class="mode active" data-mode="blind" role="radio" aria-checked="true">
+          <strong>Poker Körlemesi</strong>
+          <span>Her tur sabit ücret: 1 euro değerinde. Her 4 turda ikiye katlanır.</span>
+        </button>
+        <button type="button" class="mode" data-mode="rake" role="radio" aria-checked="false">
+          <strong>Komisyon</strong>
+          <span>Her tur servetinin %1&#39;i. Her 4 turda oran ikiye katlanır.</span>
+        </button>
+      </div>
+    </div>
+
+    <button id="btn-start" class="btn btn-primary btn-xl" disabled>MASAYA OTUR</button>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Rekorlar</h2>
+        <button id="btn-clear-scores" class="btn btn-ghost btn-sm">Temizle</button>
+      </div>
+      <ol id="scoreboard" class="scoreboard"></ol>
+      <p id="scoreboard-empty" class="hint muted">Daha kimse masaya oturmadı.</p>
+    </div>
+
+    <details class="card how">
+      <summary><h2>Nasıl oynanır?</h2></summary>
+      <ol>
+        <li><b>100 euro</b> ile başlarsın.</li>
+        <li>Her tur rulet döner ve elindeki paraya karşılık <b>başka bir para biriminden teklif</b> gelir.</li>
+        <li>Teklifin piyasa kurunun altında mı üstünde mi olduğunu <b>sana kimse söylemez.</b> Kurları bilmek ya da sezmek zorundasın.</li>
+        <li><b>Kabul</b> edersen paran o para birimine geçer. <b>Pas</b> geçersen elindekiyle kalırsın.</li>
+        <li>Her tur masaya bir <b>ücret</b> ödersin ve bu ücret durmadan büyür. Sürekli pas geçersen paran erir.</li>
+        <li>Para birimi ne kadar egzotikse teklif o kadar <b>sapkın</b>: hem beş katına çıkabilir hem de seni silebilir.</li>
+        <li>Her teklifle birlikte masadan bir <b>kulis dedikodusu</b> sızar. Çoğunlukla doğrudur ama arada bile bile yanlış yönlendirir.</li>
+        <li>Skorun, oyun boyunca <b>ulaştığın en yüksek euro değeridir</b> — o an hangi parada olduğun da kaydedilir.</li>
+        <li>Her oyunda <b>3 kur kontrolü</b> hakkın var: elindekinin ve teklifin gerçek euro değerini gösterir.</li>
+      </ol>
+      <p class="hint muted">Kurlar oyun için dondurulmuş yaklaşık değerlerdir, canlı piyasa verisi değildir.</p>
+    </details>
+
+    <footer class="foot">
+      <button id="btn-sound" class="btn btn-ghost btn-sm" aria-pressed="true">Ses: açık</button>
+    </footer>
+  </section>
+
+  <!-- ============== SIRA DEVRI ============== -->
+  <section id="screen-pass" class="screen">
+    <div class="pass-box">
+      <p class="pass-label">Sira</p>
+      <h2 id="pass-name">—</h2>
+      <p id="pass-sub" class="hint"></p>
+      <button id="btn-pass-go" class="btn btn-primary btn-xl">BASLA</button>
+    </div>
+  </section>
+
+  <!-- ============== OYUN ============== -->
+  <section id="screen-game" class="screen">
+    <div class="hud">
+      <div class="hud-top">
+        <span id="hud-player" class="hud-player">—</span>
+        <span id="hud-round" class="hud-round">Tur 1</span>
+      </div>
+      <div class="wallet">
+        <div id="wallet-amount" class="wallet-amount">100,00</div>
+        <div id="wallet-cur" class="wallet-cur">🇪🇺 EUR · Euro</div>
+      </div>
+      <div class="hud-bottom">
+        <span id="hud-ante" class="pill pill-warn">Sonraki ücret: —</span>
+        <span id="hud-peeks" class="pill">Kur kontrolü: 3</span>
+      </div>
+    </div>
+
+    <div class="wheel-wrap">
+      <div class="wheel-pointer" aria-hidden="true"></div>
+      <canvas id="wheel" width="640" height="640" role="img" aria-label="Para birimi ruleti"></canvas>
+      <div id="wheel-hub" class="wheel-hub">ÇEVİR</div>
+    </div>
+
+    <div id="stage" class="stage">
+      <!-- dinamik icerik: teklif karti / sonuc karti -->
+    </div>
+
+    <div id="actions" class="actions"></div>
+
+    <div class="log-wrap">
+      <h3>Tur geçmişi</h3>
+      <ul id="log" class="log"></ul>
+    </div>
+  </section>
+
+  <!-- ============== OYUN SONU ============== -->
+  <section id="screen-over" class="screen">
+    <div class="card result">
+      <p id="over-reason" class="over-reason">—</p>
+      <h2 id="over-name">—</h2>
+      <p class="result-label">Zirve servet</p>
+      <div id="over-peak-amount" class="result-amount">—</div>
+      <div id="over-peak-cur" class="result-cur">—</div>
+      <div id="over-peak-eur" class="result-eur">—</div>
+      <div id="over-badges" class="badges"></div>
+      <p id="over-note" class="hint"></p>
+    </div>
+    <div class="card">
+      <h2>Karne</h2>
+      <ul id="over-log" class="log log-full"></ul>
+    </div>
+    <div class="stack">
+      <button id="btn-over-next" class="btn btn-primary btn-xl">DEVAM</button>
+      <button id="btn-over-home" class="btn btn-ghost">Ana ekran</button>
+    </div>
+  </section>
+
+  <!-- ============== TURNUVA SONU ============== -->
+  <section id="screen-tournament" class="screen">
+    <header class="brand">
+      <h1>TURNUVA SONUCU</h1>
+    </header>
+    <ol id="tournament-list" class="scoreboard big"></ol>
+    <div class="stack">
+      <button id="btn-tour-again" class="btn btn-primary btn-xl">AYNI KADROYLA TEKRAR</button>
+      <button id="btn-tour-home" class="btn btn-ghost">Ana ekran</button>
+    </div>
+  </section>
+
+</div>
+
+<script src="js/currencies.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>
