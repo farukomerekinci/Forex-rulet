@@ -488,6 +488,17 @@ function decide(accept) {
   const o = g.offer, t = o.target, v = verdictOf(o.m);
   const from = g.cur;
 
+  const beforeEur = eurValue(g);       // karar anindaki servet
+  const offerEur = o.receive / t.r;    // teklifin gercek degeri
+
+  // Kabul: kazanc/kayip.  Pas: kurtarilan (+) ya da kacirilan (−) miktar.
+  const delta = accept ? offerEur - beforeEur : beforeEur - offerEur;
+  const gainful = delta >= 0;
+  const deltaLabel = accept
+    ? (gainful ? 'Kazancın' : 'Kaybın')
+    : (gainful ? 'Kurtardığın' : 'Kaçırdığın');
+  const deltaText = (gainful ? '+' : '−') + fmtEur(Math.abs(delta));
+
   if (accept) {
     g.cur = t;
     g.amt = o.receive;
@@ -495,13 +506,14 @@ function decide(accept) {
     if (o.m > g.bestTrade) g.bestTrade = o.m;
     if (t.t >= 4) g.exotic += 1;
     touchPeak(g);
-    const up = o.m >= 1;
-    pushLog(g, g.round, up ? 'up' : 'down',
+    pushLog(g, g.round, gainful ? 'up' : 'down',
       from.c + ' → ' + t.c + '  ' + v.tag.replace('!', '') + '  · ' + fmtEur(eurValue(g)));
-    renderHud(up ? 'up' : 'down');
+    renderHud(gainful ? 'up' : 'down');
     if (o.m >= 1.10) Sound.good(); else if (o.m < 0.93) Sound.bad(); else Sound.flat();
   } else {
-    pushLog(g, g.round, 'neutral', 'pas · ' + t.c + '  (' + v.tag.replace('!', '') + ')');
+    pushLog(g, g.round, gainful ? 'up' : 'down',
+      'pas ' + t.c + '  ' + v.tag.replace('!', '') + '  · ' +
+      (gainful ? 'kurtardın ' : 'kaçırdın ') + deltaText);
     Sound.flat();
     renderHud();
   }
@@ -515,6 +527,14 @@ function decide(accept) {
     ? 'Paran artık ' + t.f + ' ' + t.c + '. '
     : 'Pas geçtin, ' + from.f + ' ' + from.c + ' elinde kaldı. ';
   card.appendChild(el('p', 'verdict-text', lead + v.txt));
+
+  const dBox = el('div', 'delta ' + (gainful ? 'delta-up' : 'delta-down'));
+  dBox.appendChild(el('div', 'delta-amount', deltaText));
+  dBox.appendChild(el('div', 'delta-label', deltaLabel));
+  dBox.appendChild(el('div', 'delta-sub',
+    'Teklif ' + fmtEur(offerEur) + ' ediyordu · elindeki ' + fmtEur(beforeEur)));
+  card.appendChild(dBox);
+
   stage.appendChild(card);
 
   const acts = $('#actions');

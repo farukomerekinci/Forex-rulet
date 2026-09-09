@@ -9,6 +9,9 @@ Kendi pozisyonun her zaman şeffaftır: bakiyenin ve masa ücretinin euro karş�
 görürsün. Gizli olan tek şey **teklifin ne ettiğidir** — onu kurları bilerek ya da sezerek
 kestirmek zorundasın.
 
+Kararından sonra teklifin gerçek değeri açılır — kabul ettiysen kazancın, pas geçtiysen
+kurtardığın ya da kaçırdığın miktar euro olarak yazılır. Yani her tur bir şey öğrenirsin.
+
 Her tur masaya bir ücret ödersin ve bu ücret durmadan büyür. Sürekli pas geçersen paran erir,
 her teklifi kabul edersen egzotik bir kağıtta silinirsin.
 

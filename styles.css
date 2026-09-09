@@ -243,6 +243,12 @@ input[type=text]::placeholder{color:var(--ink-faint)}
 .verdict-text{font-size:13.5px;color:var(--ink-dim);margin:0}
 .v-steal{color:#7dffc4}.v-good{color:var(--green)}.v-fair{color:var(--ink-dim)}
 .v-bad{color:#ffab6b}.v-scam{color:var(--red)}
+.delta{margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.delta-amount{font-family:var(--mono);font-size:26px;font-weight:700;line-height:1.1}
+.delta-label{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px}
+.delta-sub{font-family:var(--mono);font-size:11.5px;color:var(--ink-faint);margin-top:7px}
+.delta-up .delta-amount{color:var(--green)}
+.delta-down .delta-amount{color:var(--red)}
 
 /* ---------- aksiyonlar ---------- */
 .actions{display:grid;gap:9px;margin-bottom:16px}
