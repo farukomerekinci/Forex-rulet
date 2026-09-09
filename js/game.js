@@ -50,6 +50,10 @@ function fmtEur(v) {
   if (Math.abs(v) >= 1e12) return new Intl.NumberFormat('tr-TR', { notation: 'compact', maximumFractionDigits: 2 }).format(v) + ' €';
   return new Intl.NumberFormat('tr-TR', { minimumFractionDigits: d, maximumFractionDigits: d }).format(v) + ' €';
 }
+/** " ≈ 12,34 €" eki; zaten euro tutuluyorsa bos doner. */
+function eurTag(amount, cur) {
+  return cur.c === 'EUR' ? '' : ' ≈ ' + fmtEur(amount / cur.r);
+}
 function roundTo(amount, cur) {
   const p = Math.pow(10, decimalsOf(cur));
   return Math.round(amount * p) / p;
@@ -327,8 +331,14 @@ function renderHud(flash) {
   $('#hud-round').textContent = 'Tur ' + Math.max(1, g.round);
   $('#wallet-amount').textContent = fmt(g.amt, g.cur);
   $('#wallet-cur').textContent = g.cur.f + ' ' + g.cur.c + ' · ' + g.cur.n;
-  const ante = anteEur(g.round + 1, g.mode, eurValue(g)) * g.cur.r;
-  $('#hud-ante').textContent = 'Sonraki ücret: ' + fmt(ante, g.cur) + ' ' + g.cur.c;
+
+  const wEur = $('#wallet-eur');
+  wEur.textContent = '≈ ' + fmtEur(eurValue(g));
+  wEur.classList.toggle('ghost', g.cur.c === 'EUR');   // yer korunur, tekrar gorunmez
+
+  const anteE = anteEur(g.round + 1, g.mode, eurValue(g));
+  const ante = anteE * g.cur.r;
+  $('#hud-ante').textContent = 'Ücret: ' + fmt(ante, g.cur) + ' ' + g.cur.c + eurTag(ante, g.cur);
   $('#hud-peeks').textContent = 'Kur kontrolü: ' + g.peeks;
 
   const w = document.querySelector('.wallet');
@@ -355,7 +365,8 @@ function startRound() {
     return gameOver('Masa ücretini ödeyemedin');
   }
   g.amt = roundTo(g.amt - anteCur, g.cur);
-  pushLog(g, g.round, 'down', 'masa ücreti −' + fmt(anteCur, g.cur) + ' ' + g.cur.c);
+  pushLog(g, g.round, 'down',
+    'masa ücreti −' + fmt(anteCur, g.cur) + ' ' + g.cur.c + eurTag(anteCur, g.cur));
 
   if (eurValue(g) < 1) {
     return gameOver('Cebinde 1 euro bile kalmadı');
@@ -427,7 +438,8 @@ function renderOffer(peeked) {
   cur.appendChild(el('small', null, t.n));
   card.appendChild(cur);
   card.appendChild(el('div', 'offer-amount', fmt(o.receive, t)));
-  card.appendChild(el('div', 'offer-vs', 'karşılığında: ' + fmt(g.amt, g.cur) + ' ' + g.cur.c));
+  card.appendChild(el('div', 'offer-vs',
+    'karşılığında: ' + fmt(g.amt, g.cur) + ' ' + g.cur.c + eurTag(g.amt, g.cur)));
   card.appendChild(el('span', 'risk ' + info.cls, info.label));
 
   const rum = el('div', 'rumor');
@@ -437,9 +449,10 @@ function renderOffer(peeked) {
 
   if (peeked) {
     const p = el('div', 'peek');
+    const diff = o.receive / t.r - eurValue(g);
     p.innerHTML =
-      'Elindeki: <b>' + fmtEur(eurValue(g)) + '</b><br>' +
-      'Teklif: <b>' + fmtEur(o.receive / t.r) + '</b><br>' +
+      'Teklifin değeri: <b>' + fmtEur(o.receive / t.r) + '</b><br>' +
+      'Elindekine göre: <b>' + (diff >= 0 ? '+' : '−') + fmtEur(Math.abs(diff)) + '</b><br>' +
       'Piyasa kuru: 1 € = ' + fmt(t.r, t) + ' ' + t.c;
     card.appendChild(p);
   }
@@ -484,7 +497,7 @@ function decide(accept) {
     touchPeak(g);
     const up = o.m >= 1;
     pushLog(g, g.round, up ? 'up' : 'down',
-      from.c + ' → ' + t.c + '  ' + v.tag.replace('!', ''));
+      from.c + ' → ' + t.c + '  ' + v.tag.replace('!', '') + '  · ' + fmtEur(eurValue(g)));
     renderHud(up ? 'up' : 'down');
     if (o.m >= 1.10) Sound.good(); else if (o.m < 0.93) Sound.bad(); else Sound.flat();
   } else {
